@@ -72,47 +72,37 @@ class ImageTile:
     def check_common_border(self, image_tile2):
         img1_oris = self.get_img_orients()
         img2_oris = image_tile2.get_img_orients()
-        
-        
+         
         for img1 in img1_oris:
             for img2 in img2_oris:
-                
+                flg = False
                 if np.array_equal(img1[0,:], img2[-1,:]):
-                    self.correct_orient = img1
-                    image_tile2.correct_orient = img2
                     self.neighbors['up'] = image_tile2.id
                     image_tile2.neighbors['down'] = self.id
-                    self.is_finded_correct_orient = True
-                    image_tile2.is_finded_correct_orient = True
-                    return True
+                    flg = True
                     
                 if np.array_equal(img1[:,-1], img2[:,0]):
-                    self.correct_orient = img1
-                    image_tile2.correct_orient = img2
                     self.neighbors['right'] = image_tile2.id
                     image_tile2.neighbors['left'] = self.id
-                    self.is_finded_correct_orient = True
-                    image_tile2.is_finded_correct_orient = True
-                    return True
+                    flg = True
                     
                 if np.array_equal(img1[-1,:], img2[0,:]):
-                    self.correct_orient = img1
-                    image_tile2.correct_orient = img2
                     self.neighbors['down'] = image_tile2.id
                     image_tile2.neighbors['up'] = self.id
+                    flg = True
+                    
+                if np.array_equal(img1[:,0], img2[:,-1]):
+                    self.neighbors['left'] = image_tile2.id
+                    image_tile2.neighbors['right'] = self.id
+                    flg = True
+
+                if flg:
+                    self.correct_orient = img1
+                    image_tile2.correct_orient = img2
                     self.is_finded_correct_orient = True
                     image_tile2.is_finded_correct_orient = True
                     return True
                     
-                if np.array_equal(img1[:,0], img2[:,-1]):
-                    self.correct_orient = img1
-                    image_tile2.correct_orient = img2
-                    self.neighbors['left'] = image_tile2.id
-                    image_tile2.neighbors['right'] = self.id
-                    self.is_finded_correct_orient = True
-                    image_tile2.is_finded_correct_orient = True
-                    return True
-
 def part2(images):        
     images = {k:ImageTile(k,v) for k,v in images.items()}
 

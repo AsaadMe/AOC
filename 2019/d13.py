@@ -47,7 +47,7 @@ def run_intcode(memory:defaultdict, i:int, rel_i:int, inputs:list) -> tuple:
             i += 4
         elif opcode == 3:
             if not inputs:
-                # return memory, i, rel_i, inputs, outputs, 'wait inp'
+                return memory, i, rel_i, inputs, outputs, 'wait inp'
                 inputs.append(0)
             save(1, inputs.pop(0))
             i += 2
@@ -96,4 +96,38 @@ def run_intcode(memory:defaultdict, i:int, rel_i:int, inputs:list) -> tuple:
         
     return -1
 
-print(run_intcode(mem, 0, 0, [])[1:])
+def part1():
+    output = run_intcode(mem, 0, 0, [])[-2]
+    ans_count = 0
+    for i in range(2, len(output), 3):
+        if output[i] == 2:
+            ans_count += 1
+            
+    print('Part1:', ans_count)
+    
+def part2():
+    mem[0] = 2
+    nmem = mem
+    i, rel_i, inps = 0, 0, []
+    while True:
+        nmem, i, rel_i, inps, output, retstate = run_intcode(nmem, i, rel_i, inps)
+        out_map = iter(output)
+        out_map = [(a, next(out_map), next(out_map)) for a in out_map]
+        
+        if retstate == 'finish':
+            for x,y,id in out_map:
+                if (x,y) == (-1,0):
+                    print(f'Part2: {id}')
+            return
+        
+        elif retstate == 'wait inp':        
+            for x,y,id in out_map:
+                if id == 3:
+                    paddle = (x,y)
+                if id == 4:
+                    ball = (x,y)
+                    
+            inps = [ball[0]-paddle[0]]
+                        
+part1()    
+part2()

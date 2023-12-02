@@ -1,3 +1,4 @@
+from string import digits
 import re
 
 with open('input.txt','r') as file:
@@ -19,8 +20,8 @@ def translate(line):
 ans1 = 0    
 ans2 = 0    
 for line in inp:
-    l, r = re.search(r'\d', line).group(), re.search(r'\d(?!.*\d)', line).group()
-    ans1 += int(l+r)
+    nums = [c for c in line if c in digits]
+    ans1 += int(nums[0] + nums[-1])
     
     line = translate(line)
     l, r = re.search(r'\d', line).group(), re.search(r'\d(?!.*\d)', line).group()

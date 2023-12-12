@@ -1,3 +1,4 @@
+from functools import cache
 import re
 
 with open('input.txt','r') as file:
@@ -22,3 +23,32 @@ for line in inp:
             stack.append((cur_arr,i+1))
            
 print('Part1: ', ans1)
+
+
+# Part2: rewrite part1 in recursive function and then use DP with cache.
+
+@cache
+def solve(arr, chk, in_group=0):
+    if not arr:
+        return not chk and not in_group
+    num_sols = 0
+    possible = '.#' if arr[0] == "?" else arr[0]
+    for c in possible:
+        if c == "#":
+            num_sols += solve(arr[1:], chk, in_group + 1)
+        else:
+            if in_group:
+                if chk and chk[0] == in_group:
+                    num_sols += solve(arr[1:], chk[1:])
+            else:
+                num_sols += solve(arr[1:], chk)
+    return num_sols
+
+ans = 0
+for line in inp:
+    arr, chk = line.split()
+    arr = '?'.join([arr]*5)
+    chk = [int(a) for a in chk.split(',')]*5
+    ans += solve(arr+'.', tuple(chk))
+    
+print('Part2: ', ans)

@@ -54,24 +54,27 @@ def join_two_empties(blocks: list):
 
 
 def part2(blocks: list):
-    for blockind in range(len(blocks) - 1, -1, -1):
+    last_block = blocks[-1][0]
+
+    while last_block != 0:
+        for index, (id, _) in enumerate(blocks):
+            if id == last_block:
+                blockind = index
+
         new_block = blocks.copy()
         if blocks[blockind][0] != ".":
             for empind in range(len(blocks)):
                 if (
                     blocks[empind][0] == "."
-                    and blocks[blockind][1] * len(str(blocks[blockind][0]))
-                    <= blocks[empind][1]
+                    and blocks[blockind][1] * len(str(blocks[blockind][0])) <= blocks[empind][1]
                     and empind < blockind
                 ):
                     new_block[empind], new_block[blockind] = (
                         new_block[blockind],
                         new_block[empind],
                     )
-                    if (
-                        diff := blocks[empind][1]
-                        - blocks[blockind][1] * len(str(blocks[blockind][0]))
-                    ) != 0:
+
+                    if (diff := blocks[empind][1] - blocks[blockind][1] * len(str(blocks[blockind][0]))) != 0:
                         new_block.insert(empind + 1, (".", diff))
                         new_block[blockind + 1] = (
                             ".",
@@ -83,11 +86,15 @@ def part2(blocks: list):
 
                     blocks = new_block
                     break
+
+        last_block -= 1
+
     blocks_str = []
     for block in blocks:
         for _ in range(block[1]):
             blocks_str.append(str(block[0]))
 
+    print("".join(blocks_str))
     ans2 = 0
     for i in range(len(blocks_str)):
         if blocks_str[i] != ".":
@@ -96,5 +103,5 @@ def part2(blocks: list):
     print("Part2: ", ans2)
 
 
-# part1(blocks1)
+part1(blocks1)
 part2(blocks2)

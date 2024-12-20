@@ -9,23 +9,27 @@ with open("input.txt") as file:
 @cache
 def check(design: str):
     if not design:
-        return True
+        return 1
 
+    score = 0
     for pattern in patterns:
         if pattern in design:
-            replaceds = []
-            ind = design.find(pattern)
-            replaceds.append(design[:ind])
-            replaceds.append(design[ind + len(pattern) :])
+            # replaceds = []
+            # ind = design.find(pattern)
+            # replaceds.append(design[:ind])
+            # replaceds.append(design[ind + len(pattern) :])
 
-            check_sum = 0
-            for replaced in replaceds:
-                if replaced != design and check(replaced):
-                    check_sum += 1
-            if check_sum == 2:
-                return True
+            # check_sum = 0
+            # for replaced in replaceds:
+            #     if replaced != design and check(replaced):
+            #         check_sum += 1
+            # if check_sum == 2:
+            #     return True
+            if design.startswith(pattern):
+                score += check(design[len(pattern) :])
 
-    return False
+    return score
 
 
-print("Part1: ", sum([check(design) for design in designs]))
+print("Part1: ", sum([1 for design in designs if check(design)]))
+print("Part2: ", sum([check(design) for design in designs]))
